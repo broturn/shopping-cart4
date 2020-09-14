@@ -1,11 +1,26 @@
 import React, { Component } from 'react';
- 
+
 class Product extends Component
 {
+    state = {
+        inCart: this.props.inCart
+    };
+
+    addToCart = (e) => {
+
+        e.preventDefault();
+
+        this.props.addToCart(this.props.product)
+
+        this.setState({
+            inCart: true
+        })
+    }
+
     render() {
- 
+
         const { product } = this.props;
- 
+
         return (
             <div className="col-md-3">
                 <figure className="card card-product">
@@ -17,7 +32,15 @@ class Product extends Component
                         <p className="desc">{product.description}</p>
                     </figcaption>
                     <div className="bottom-wrap">
-                        <a href="#" className="btn btn-sm btn-primary float-right">Add to cart</a>
+
+                        {
+                            this.state.inCart?(
+                                <span className="btn btn-success">Added to cart</span>
+                            ) : (
+                                <a href="#" onClick={this.addToCart} className="btn btn-sm btn-primary float-right">Add to cart</a>
+                            )
+                        }
+
                         <div className="price-wrap h5">
                             <span className="price-new">${product.price}</span>
                         </div>
@@ -27,5 +50,5 @@ class Product extends Component
         )
     }
 }
- 
+
 export default Product;

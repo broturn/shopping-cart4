@@ -1,54 +1,47 @@
 import React, { Component } from 'react';
- 
-class Product extends Component
+import Product from './Product';
+import { connect } from 'react-redux';
+import {addToCart} from "../store/actions/cartActions";
+
+
+class ProductList extends Component
 {
-    state = {
-        inCart: this.props.inCart
-    };
- 
-    addToCart = (e) => {
- 
-        e.preventDefault();
- 
-        this.props.addToCart(this.props.product)
- 
-        this.setState({
-            inCart: true
-        })
+    addToCart = (product) => {
+        this.props.addToCart(product);
     }
- 
+
     render() {
- 
-        const { product } = this.props;
- 
         return (
-            <div className="col-md-3">
-                <figure className="card card-product">
-                    <div className="img-wrap">
-                        <img className="img-responsive" src={product.image} alt=""/>
-                    </div>
-                    <figcaption className="info-wrap">
-                        <h4 className="title">{product.title}</h4>
-                        <p className="desc">{product.description}</p>
-                    </figcaption>
-                    <div className="bottom-wrap">
- 
-                        {
-                            this.state.inCart?(
-                                <span className="btn btn-success">Added to cart</span>
-                            ) : (
-                                <a href="#" onClick={this.addToCart} className="btn btn-sm btn-primary float-right">Add to cart</a>
-                            )
-                        }
- 
-                        <div className="price-wrap h5">
-                            <span className="price-new">${product.price}</span>
-                        </div>
-                    </div>
-                </figure>
+            <div className="container">
+                <h2>Product List</h2>
+                <br/>
+                <div className="row">
+
+                    {
+                        this.props.products.map(product => <Product product={product} addToCart={this.addToCart} inCart={this.props.cart.length>0 && this.props.cart.filter(e => e.product.id === product.id).length > 0 } key={product.id} /> )
+                    }
+
+                </div>
             </div>
         )
     }
 }
- 
-export default Product;
+
+const mapStateToProps = (state) => {
+
+    return {
+        products: state.product.products,
+        cart: state.cart.cart
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addToCart: (product) => {
+            dispatch(addToCart(product));
+        }
+    }
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductList)
