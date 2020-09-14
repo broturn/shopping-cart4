@@ -1,34 +1,54 @@
 import React, { Component } from 'react';
-import Product from './Product';
-import { connect } from 'react-redux';
  
- 
-class ProductList extends Component
+class Product extends Component
 {
-    
+    state = {
+        inCart: this.props.inCart
+    };
+ 
+    addToCart = (e) => {
+ 
+        e.preventDefault();
+ 
+        this.props.addToCart(this.props.product)
+ 
+        this.setState({
+            inCart: true
+        })
+    }
+ 
     render() {
+ 
+        const { product } = this.props;
+ 
         return (
-            <div className="container">
-                <h2>Product List</h2>
-                <br/>
-                <div className="row">
+            <div className="col-md-3">
+                <figure className="card card-product">
+                    <div className="img-wrap">
+                        <img className="img-responsive" src={product.image} alt=""/>
+                    </div>
+                    <figcaption className="info-wrap">
+                        <h4 className="title">{product.title}</h4>
+                        <p className="desc">{product.description}</p>
+                    </figcaption>
+                    <div className="bottom-wrap">
  
-                    {
-                        this.props.products.map(product => <Product product={product} key={product.id} /> )
-                    }
+                        {
+                            this.state.inCart?(
+                                <span className="btn btn-success">Added to cart</span>
+                            ) : (
+                                <a href="#" onClick={this.addToCart} className="btn btn-sm btn-primary float-right">Add to cart</a>
+                            )
+                        }
  
-                </div>
+                        <div className="price-wrap h5">
+                            <span className="price-new">${product.price}</span>
+                        </div>
+                    </div>
+                </figure>
             </div>
         )
     }
 }
  
-const mapStateToProps = (state) => {
- 
-    return {
-        products: state.product.products
-    }
-};
- 
- 
-export default connect(mapStateToProps)(ProductList)
+export default Product;
